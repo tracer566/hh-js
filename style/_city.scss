@@ -9,9 +9,16 @@
   border-top: 1px solid #d4d7d9;
   padding: 25px 0;
   overflow-y: auto;
+
+  // opacity: 0;
+  // z-index: -1;
+  // transition: opacity .3s ease, z-index .3s ease;
   &_active {
     display: block;
+    // opacity: 1;
+    // z-index: 99;
   }
+
   &__form {
     padding-bottom: 25px;
     border-bottom: 1px solid #edeff0;
@@ -21,9 +28,11 @@
   &__container {
     position: relative;
     width: 100%;
+
     @media (max-width: 1024px) {
       padding-top: 50px;
     }
+
     @media (max-width: 600px) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -61,12 +70,15 @@
     line-height: 38px;
     border-radius: 4px;
     outline: 0;
+
     &::placeholder {
       color: #babdbf;
     }
+
     &:hover {
       border-color: #888b8c;
     }
+
     &:focus {
       border-color: #1785e5;
     }
@@ -81,33 +93,24 @@
     background: url("../img/search_min.svg") no-repeat 0 0;
     width: 16px;
     height: 16px;
+
     &:hover {
       background-position: -18px 1px;
     }
-  }
-
-  &__region {
-
   }
 
   &__region-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 100px 50px;
+
     @media (max-width: 1024px) {
       grid-template-columns: repeat(3, 1fr);
     }
+
     @media (max-width: 600px) {
       grid-template-columns: repeat(2, 1fr);
     }
-  }
-
-  &__region-item {
-
-  }
-
-  &__list {
-
   }
 
   &__item {
@@ -116,7 +119,8 @@
 
   &__link {
     color: #3c9df2;
-    transition: color .1s,opacity .1s;
+    transition: color .1s, opacity .1s;
+
     &:hover {
       color: #0d69ba;
     }
