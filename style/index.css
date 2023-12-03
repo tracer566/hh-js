@@ -985,3 +985,35 @@ iframe {
     width: 100%;
   }
 }
+.footer {
+  background-color: #222324;
+  color: #fff;
+  padding: 30px 0;
+}
+.footer__contacts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+.footer__item {
+  margin-bottom: 10px;
+}
+.footer__logo {
+  width: 50px;
+  height: 50px;
+}
+
+@media (max-width: 476px) {
+  .footer__contacts {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer__logo {
+    order: -1;
+    width: 50px;
+    height: 50px;
+  }
+}
