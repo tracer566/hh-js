@@ -156,3 +156,95 @@ vacancyModalOverlay.addEventListener('click', e => {
   };
 
 });
+
+// вывод карточек
+// resultList 
+/* создание одной карточки */
+const createCard = (vacancy) => {
+  // console.log('vacancy: ', vacancy);
+
+  const {
+    id,
+    title,
+    compensation,
+    workSchedule,
+    employer,
+    country,
+    address,
+    experience,
+    description,
+    date,
+    employment
+  } = vacancy;
+
+  const card = document.createElement('li');
+  card.classList.add('result__item');
+
+  card.insertAdjacentHTML('afterbegin', `
+  <article class="vacancy">
+<h2 class="vacancy__title">
+<a class="vacancy__open-modal" href="#" data-vacancy="${id}">${title}</a>
+</h2>
+<p class="vacancy__compensation">${compensation}</p>
+<p class="vacancy__work-schedule">${workSchedule}</p>
+<div class="vacancy__employer">
+<p class="vacancy__employer-title">${employer}</p>
+<p class="vacancy__employer-address">${address}</p>
+</div>
+<p class="vacancy__description">${description}</p>
+<p class="vacancy__date">
+<time datetime="2023-12-01">${date}</time>
+</p>
+<div class="vacancy__wrapper-btn">
+<a class="vacancy__response vacancy__open-modal" href="#" data-vacancy="${id}">Откликнуться</a>
+<button class="vacancy__contacts">Показать контакты</button>
+</div>
+</article>
+  `);
+
+  return card;
+
+};
+
+// 1 способ-вывод на страницу всех карточек
+// const renderCards = (data) => {
+//   resultList.textContent = '';
+//   // const cards = [];
+//   for (let i = 0; i < data.length; i += 1) {
+//     // cards.push(createCard(data[i]));
+//     resultList.append(createCard(data[i]))
+//   };
+//   // resultList.prepend(...cards);
+// };
+
+/* 2 способ-вывод на страницу всех карточек */
+const renderCards = (data) => {
+  resultList.textContent = '';
+  const cards = data.map(createCard);
+  resultList.append(...cards)
+};
+
+/* получаю данные http://localhost:3000/api/vacancy или db.json*/
+const getData = () => fetch('db.json')
+  .then(responce => {
+    console.log('responce: ', responce);
+    if (responce.ok) {
+      return responce.json();
+    } else {
+      throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
+    }
+  })
+  .catch(error => {
+    console.error(`Данные не получены-ошибка ${error}`);
+  })
+
+// ассинхроная функция для принятие promice из getdata
+const init = async () => {
+  const data = await getData();
+  // console.log('data: ', data);
+  renderCards(data);
+};
+
+init();
+
+// renderCards(['I', 'WAS', 'THE', 'FIRST', 'HUNTER', 'ON', 'MONSTERS', 'FROM', 'LONDON']);
