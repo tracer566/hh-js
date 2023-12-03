@@ -125,7 +125,7 @@ cityRegionList.addEventListener('click', (event) => {
 
 // модалка вакансии
 const vacancyModalOverlay = document.querySelector('.overlay_vacancy');
-const vacancyModalClose = document.querySelector('.modal__close');
+// const vacancyModalClose = document.querySelector('.modal__close');
 const resultList = document.querySelector('.result__list');
 // const vacancyTitle = document.querySelector('.vacancy__title');
 // const vacancyOpenModal = document.querySelector('.vacancy__open-modal');
@@ -148,10 +148,10 @@ resultList.addEventListener('click', (event) => {
   }
 });
 
-vacancyModalClose.addEventListener('click', closeModal);
+// vacancyModalClose.addEventListener('click', closeModal);
 vacancyModalOverlay.addEventListener('click', e => {
   const target = e.target;
-  if (target === vacancyModalOverlay) {
+  if (target === vacancyModalOverlay || target.classList.contains('modal__close')) {
     closeModal();
   };
 
