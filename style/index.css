@@ -702,6 +702,7 @@ iframe {
 
 .result {
   flex-grow: 1;
+  max-width: 100%;
 }
 .result__item {
   margin-bottom: 16px;
