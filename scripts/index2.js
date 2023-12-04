@@ -242,8 +242,9 @@ const getData = ({ searсh } = {}) => {
         }
       }).then((data) => {
         const filterData = data.filter((item) => {
-          return item.title.toLowerCase().includes(searсh.toLowerCase()) ||
-            item.description.toLowerCase().includes(searсh.toLowerCase());
+          return item.title.toLowerCase().includes(searсh.toLowerCase())
+            || item.description.toLowerCase().includes(searсh.toLowerCase())
+            || item.employer.toLowerCase().includes(searсh.toLowerCase());
         });
 
         return filterData;

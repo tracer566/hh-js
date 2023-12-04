@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 // импорт стандартных библиотек Node.js
-const {existsSync, readFileSync, writeFileSync} = require('fs');
-const {createServer} = require('http');
+const { existsSync, readFileSync, writeFileSync } = require('fs');
+const { createServer } = require('http');
 
 // файл для базы данных
 const DB = process.env.DB || './db.json';
@@ -28,14 +28,14 @@ function getVacancyList(params = {}) {
       data.employer.toLowerCase(),
       data.description.toLowerCase(),
       ...data.skills
-      ]
-        .some(str => str.toLowerCase().includes(search))
+    ]
+      .some(str => str.toLowerCase().includes(search))
     );
   }
   return vacancy;
 }
 
-function getStartVacancyList({country, city, search}) {
+function getStartVacancyList({ country, city, search }) {
   if (city) {
     return getVacancyList().filter(item => item.address.toLowerCase() === city.toLowerCase());
   }
@@ -44,24 +44,24 @@ function getStartVacancyList({country, city, search}) {
     return getVacancyList().filter(item => item.country.toLowerCase() === country.toLowerCase());
   }
 
-  return getVacancyList({search}).filter(item => item.country.toLowerCase() === 'россия');
+  return getVacancyList({ search }).filter(item => item.country.toLowerCase() === 'россия');
 }
 
 function getVacancyAddressList(address) {
   if (!address) return getVacancyList();
   const vacancy = JSON.parse(readFileSync(DB) || '[]');
-  if (!vacancy) throw new ApiError(404, {message: 'Address Not Found'});
+  if (!vacancy) throw new ApiError(404, { message: 'Address Not Found' });
   return vacancy.filter(item => item.address === address);
 }
 
 function getVacancy(itemId) {
-  const vacancy = getVacancyList().find(({id}) => id === itemId);
-  if (!vacancy) throw new ApiError(404, {message: 'Vacancy Not Found'});
+  const vacancy = getVacancyList().find(({ id }) => id === itemId);
+  if (!vacancy) throw new ApiError(404, { message: 'Vacancy Not Found' });
   return vacancy;
 }
 
 // создаём новый файл с базой данных, если он не существует
-if (!existsSync(DB)) writeFileSync(DB, '[]', {encoding: 'utf8'});
+if (!existsSync(DB)) writeFileSync(DB, '[]', { encoding: 'utf8' });
 
 // создаём HTTP сервер, переданная функция будет реагировать на все запросы к нему
 module.exports = createServer(async (req, res) => {
@@ -86,7 +86,7 @@ module.exports = createServer(async (req, res) => {
   // если URI не начинается с нужного префикса - можем сразу отдать 404
   if (!req.url || !req.url.startsWith(URI)) {
     res.statusCode = 404;
-    res.end(JSON.stringify({message: 'Not Found'}));
+    res.end(JSON.stringify({ message: 'Not Found' }));
     return;
   }
 
@@ -132,7 +132,7 @@ module.exports = createServer(async (req, res) => {
     } else {
       // если что-то пошло не так - пишем об этом в консоль и возвращаем 500 ошибку сервера
       res.statusCode = 500;
-      res.end(JSON.stringify({message: 'Server Error'}));
+      res.end(JSON.stringify({ message: 'Server Error' }));
       console.error(err);
     }
   }

@@ -219,7 +219,7 @@ const foundText = document.querySelector('.found');
 foundText.innerHTML = '';
 const renderCards = (data, textSearch = '') => {
   if (textSearch) {
-    foundText.innerHTML = `${data.length} вакансий &laquo;<span class="found__item">${textSearch}</span>&raquo;`
+    foundText.innerHTML = `Найдено ${data.length} вакансий &laquo;<span class="found__item">${textSearch}</span>&raquo;`
   }
   resultList.textContent = '';
   // createCard это функция () => {} вставленная в метод,работает и выглядит так же
