@@ -218,6 +218,7 @@ const createCard = (vacancy) => {
 const foundText = document.querySelector('.found');
 foundText.innerHTML = '';
 const renderCards = (data, textSearch = '') => {
+  console.log('render data: ', data);
   if (textSearch) {
     foundText.innerHTML = `${data.length} вакансий &laquo;<span class="found__item">${textSearch}</span>&raquo;`
   }
@@ -232,20 +233,28 @@ const renderCards = (data, textSearch = '') => {
 const getData = ({ searсh } = {}) => {
   // поиск
   if (searсh) {
-    return fetch(`http://localhost:3000/api/vacancy?search=${searсh}`)
+    return fetch(`db.json`)
       .then(responce => {
         if (responce.ok) {
           return responce.json();
         } else {
           throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
         }
+      }).then((data) => {
+        const filterData = data.filter((item) => {
+          return item.title.toLowerCase().includes(searсh.toLowerCase()) ||
+            item.description.toLowerCase().includes(searсh.toLowerCase());
+        });
+
+        return filterData;
+
       })
       .catch(error => {
         console.error(`Данные не получены-ошибка ${error}`);
       })
   }
   // без поиска
-  return fetch('http://localhost:3000/api/vacancy')
+  return fetch('db.json')
     .then(responce => {
       if (responce.ok) {
         return responce.json();

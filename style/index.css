@@ -511,6 +511,10 @@ iframe {
   background-color: #1476cc;
 }
 
+input[type=search]::-webkit-search-cancel-button {
+  display: none;
+}
+
 .navigation__list {
   display: flex;
 }
