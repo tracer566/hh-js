@@ -40,6 +40,12 @@ const optionBtnPeriod = document.querySelector('.option__btn_period');
 const optionsListOrder = document.querySelector('.option__list_order');
 const optionsListPeriod = document.querySelector('.option__list_period');
 
+// 2 пример склонение слова + число https://codepen.io/Quper/pen/zYGxbJm
+// возвращает число и слово 
+const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
+  0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+
+
 
 // contextmenu клик правой кнопкой
 // optionBtnOrder.addEventListener('contextmenu', (event) => {
@@ -214,12 +220,15 @@ const createCard = (vacancy) => {
 //   // resultList.prepend(...cards);
 // };
 
+
 /* 2 способ-вывод на страницу всех карточек */
 const foundText = document.querySelector('.found');
-foundText.innerHTML = '';
 const renderCards = (data, textSearch = '') => {
   if (textSearch) {
-    foundText.innerHTML = `Найдено ${data.length} вакансий &laquo;<span class="found__item">${textSearch}</span>&raquo;`
+    // foundText.innerHTML = `Найдено ${data.length} вакансий &laquo;<span class="found__item">${textSearch}</span>&raquo;`
+
+    // склонение слов функция declOfNum(number,[word1,word2,word3])
+    foundText.innerHTML = `Найдено ${declOfNum(data.length, ['вакансия', 'вакансии', 'вакансий'])}  &laquo;<span class="found__item">${textSearch}</span>&raquo;`
   }
   resultList.textContent = '';
   // createCard это функция () => {} вставленная в метод,работает и выглядит так же
