@@ -42,6 +42,9 @@
 
   &__description {
     margin-bottom: 12px;
+    max-height: 106px;
+    overflow: hidden;
+
   }
 
   &__date {
@@ -53,6 +56,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+
     @media (max-width: 600px) {
       justify-content: flex-end;
     }
@@ -71,6 +75,7 @@
     font-family: inherit;
     line-height: 30px;
     transition: background-color .36s ease-in-out, color .36s ease-in-out;
+
     &:hover {
       color: #1785e5;
       background-color: #fff;
@@ -91,6 +96,7 @@
     background-color: initial;
     color: #1785e5;
     transition: background-color .36s ease-in-out, color .36s ease-in-out;
+
     &:hover {
       color: #fff;
       background-color: #1785e5;

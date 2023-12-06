@@ -17,7 +17,7 @@ const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11
   0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
 
 /* получаю данные http://localhost:3000/api/vacancy или db.json,деструктуризация {search},создаст переменную */
-const getData = ({ searсh } = {}) => {
+const getData = ({ searсh, id } = {}) => {
   if (searсh) {
     return fetch(`db.json`)
       .then(responce => {
@@ -40,7 +40,28 @@ const getData = ({ searсh } = {}) => {
         console.error(`Данные не получены-ошибка ${error}`);
       })
   }
-  // без поиска
+  // без поиска,id это для модалки
+  if (id) {
+    return fetch('db.json')
+      .then(responce => {
+        if (responce.ok) {
+          return responce.json();
+        } else {
+          throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
+        }
+      }).then((data) => {
+        const findCard = data.find(item => {
+          // вернуть из базы item.id вакансию равную переданному id
+          return item.id === id;
+        });
+        return findCard
+      })
+      .catch(error => {
+        console.error(`Данные не получены-ошибка ${error}`);
+      })
+  }
+
+  // при вервой загрузке
   return fetch('db.json')
     .then(responce => {
       if (responce.ok) {
@@ -52,6 +73,7 @@ const getData = ({ searсh } = {}) => {
     .catch(error => {
       console.error(`Данные не получены-ошибка ${error}`);
     })
+
 }
 
 // открывает модалку вакансий
@@ -108,7 +130,7 @@ const createCard = (vacancy) => {
 
 /* вывод на страницу всех карточек */
 const renderCards = (data, textSearch = '') => {
-  console.log('render data: ', data);
+  // console.log('render data: ', data);
   if (textSearch) {
     // склонение слов функция declOfNum(number,[word1,word2,word3])
     foundText.innerHTML = `Найдено ${declOfNum(data.length, ['вакансия', 'вакансии', 'вакансий'])}  &laquo;<span class="found__item">${textSearch}</span>&raquo;`
@@ -186,13 +208,63 @@ const handlerCity = () => {
   });
 };
 
+// создает модалку для каждой вакансии
+const createModalVacancy = (vacancy) => {
+  const { title, compensation, workSchedule, employer, address, experience, description, skills } = vacancy;
+
+  // перебираю массив скиллов и создаю ul с li
+  const addSkills = () => {
+    const list = skills.map((skill) => {
+      const li = document.createElement('li');
+      li.classList.add('skills__item');
+      li.textContent = skill;
+      return li;
+    })
+    const ul = document.createElement('ul');
+    ul.classList.add('skills__list');
+    ul.append(...list);
+    return ul;
+  };
+
+  const resultSkills = addSkills();
+
+  const modal = document.createElement('div');
+  modal.classList.add('modal');
+  modal.innerHTML = `
+  <button class="modal__close">✕</button>
+<h2 class="modal__title">${title}</h2>
+<p class="modal__compensation">${compensation}</p>
+<p class="modal__employer">${employer}</p>
+<p class="modal__address">${address}</p>
+<p class="modal__experience">${experience}</p>
+<p class="modal__employment">${workSchedule}</p>
+<p class="modal__description">${description}</p>
+<div class="modal__skills skills">
+<h2 class="skills__title">Требования к кандидату:</h2>
+<ul class="skills__list">
+${resultSkills.outerHTML}
+</ul>
+</div>
+<button class="modal__response">Отправить резюме</button>
+  `
+  return modal;
+};
+
+
+// открывает и вставляет модалку вакансий
 const handlerModalVacancy = () => {
   // делегирование на весь список вакансий,для открытия модалки вакансии
-  resultList.addEventListener('click', (event) => {
-    event.preventDefault();
+  resultList.addEventListener('click', async (event) => {
     // в дата атрибутах на кнопках есть data-vacancy
     if (event.target.dataset.vacancy) {
+      event.preventDefault();
       openModal();
+      vacancyModalOverlay.innerHTML = ``;
+      /* в getData деструктуризация({ searсh, id } и можно выбрать какому параметру назначить
+      event.target.dataset.vacancy и делаю функцию асинхронной при вызове getData */
+      const data = await getData({ id: event.target.dataset.vacancy });
+      const modal = createModalVacancy(data);
+      vacancyModalOverlay.append(modal);
     }
   });
 
