@@ -17,16 +17,18 @@ const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11
   0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
 
 /* получаю данные http://localhost:3000/api/vacancy или db.json,деструктуризация {search},создаст переменную */
-const getData = ({ searсh, id } = {}) => {
-  if (searсh) {
-    return fetch(`db.json`)
-      .then(responce => {
-        if (responce.ok) {
-          return responce.json();
-        } else {
-          throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
-        }
-      }).then((data) => {
+const getData = ({ searсh, id, country, city } = {}) => {
+
+  return fetch(`db.json`)
+    .then(responce => {
+      if (responce.ok) {
+        return responce.json();
+      } else {
+        throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
+      }
+    }).then((data) => {
+      //search 
+      if (searсh) {
         const filterData = data.filter((item) => {
           return item.title.toLowerCase().includes(searсh.toLowerCase())
             || item.description.toLowerCase().includes(searсh.toLowerCase())
@@ -34,45 +36,42 @@ const getData = ({ searсh, id } = {}) => {
         });
 
         return filterData;
-
-      })
-      .catch(error => {
-        console.error(`Данные не получены-ошибка ${error}`);
-      })
-  }
-  // без поиска,id это для модалки
-  if (id) {
-    return fetch('db.json')
-      .then(responce => {
-        if (responce.ok) {
-          return responce.json();
-        } else {
-          throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
-        }
-      }).then((data) => {
+      };
+      //id вакансии для модалки
+      if (id) {
         const findCard = data.find(item => {
           // вернуть из базы item.id вакансию равную переданному id
           return item.id === id;
         });
         return findCard
-      })
-      .catch(error => {
-        console.error(`Данные не получены-ошибка ${error}`);
-      })
-  }
+      };
+      //страна 
+      if (country) {
+        const filterData = data.filter((item) => {
+          return item.country.toLowerCase().includes(country.toLowerCase())
+        });
 
-  // при вервой загрузке
-  return fetch('db.json')
-    .then(responce => {
-      if (responce.ok) {
-        return responce.json();
-      } else {
-        throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
-      }
+        return filterData;
+
+      };
+
+      //страна 
+      if (city) {
+        const filterData = data.filter((item) => {
+          return item.address.toLowerCase().includes(city.toLowerCase())
+        });
+        return filterData;
+      };
+
+      // return data.splice(0, 10);
+      // console.log(data);
+      return data;
+
     })
     .catch(error => {
       console.error(`Данные не получены-ошибка ${error}`);
-    })
+    });
+
 
 }
 
@@ -200,10 +199,21 @@ const handlerCity = () => {
   });
 
   // меняет страну
-  cityRegionList.addEventListener('click', (event) => {
+  cityRegionList.addEventListener('click', async (event) => {
     if (event.target.classList.contains('city__link')) {
       topСityBtn.textContent = event.target.textContent;
-      modalCity.classList.remove('city_active')
+      modalCity.classList.remove('city_active');
+
+      // фильтр данных по городам и странам
+      if (event.target.href.includes('city')) {
+        // возращается promice нужны async,await
+        const data = await getData({ city: event.target.textContent });
+        renderCards(data);
+      } else if (event.target.href.includes('country')) {
+        // возращается promice нужны async,await
+        const data = await getData({ country: event.target.textContent });
+        renderCards(data);
+      };
     }
   });
 };

@@ -17,23 +17,24 @@ const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11
 
 /* получаю данные http://localhost:3000/api/vacancy или db.json*/
 // деструктуризация {search},создаст переменную
-const getData = ({ searсh, id } = {}) => {
+const getData = ({ searсh, id, country, city } = {}) => {
+  let url = `http://localhost:3000/api/vacancy/${id ? id : ''}`;
   // поиск
   if (searсh) {
-    return fetch(`http://localhost:3000/api/vacancy?search=${searсh}`)
-      .then(responce => {
-        if (responce.ok) {
-          return responce.json();
-        } else {
-          throw `Возможно ошибка в адресе или сервер не работает.Статус ошибки:${responce.status}`;
-        }
-      })
-      .catch(error => {
-        console.error(`Данные не получены-ошибка ${error}`);
-      })
+    url = `http://localhost:3000/api/vacancy?search=${searсh}`;
+
   };
+
+  if (country) {
+    url = `http://localhost:3000/api/vacancy?country=${country}`;
+  }
+
+  if (city) {
+    url = `http://localhost:3000/api/vacancy?city=${city}`;
+  }
+
   // без поиска
-  return fetch(`http://localhost:3000/api/vacancy/${id ? id : ''}`)
+  return fetch(url)
     .then(responce => {
       if (responce.ok) {
         return responce.json();
@@ -166,11 +167,36 @@ const handlerCity = () => {
   });
 
   // навешиваю делегирование на города и страны модалки
-  cityRegionList.addEventListener('click', (event) => {
+  cityRegionList.addEventListener('click', async (event) => {
     if (event.target.classList.contains('city__link')) {
       topСityBtn.textContent = event.target.textContent;
-      modalCity.classList.remove('city_active')
-    }
+      modalCity.classList.remove('city_active');
+
+      // фильтр данных по городам и странам
+      // 1 способ
+      const hash = new URL(event.target.href).hash.substring(1);
+      // hash в объекте это переменная выше,передаст потом параметр city или country
+      // event.target.textContent передаст город
+      const option = {
+        [hash]: event.target.textContent
+      };
+      // console.log('option: ', option);
+      // передаю объект как есть
+      const data = await getData(option);
+      renderCards(data);
+      // 2 способ event.target.getAttribute('href').substring(1)-убрать # у ссылки
+      // 3 способ
+      // if (event.target.href.includes('city')) {
+      //   // возращается promice нужны async,await
+      //   const data = await getData({ city: event.target.textContent });
+      //   renderCards(data);
+      // } else if (event.target.href.includes('country')) {
+      //   // возращается promice нужны async,await
+      //   const data = await getData({ country: event.target.textContent });
+      //   renderCards(data);
+      // };
+
+    };
   });
 };
 
