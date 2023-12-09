@@ -353,3 +353,22 @@ const init = async () => {
 
 init();
 
+// шутливый функционал overlay_active
+const overlayNotwork = document.querySelector('.overlay_notwork');
+const modalFig = document.querySelector('.modal-fig');
+const modalFigTitle = overlayNotwork.querySelector('.modal-fig__title')
+const modalFigImage = overlayNotwork.querySelector('.modal-fig__img')
+
+
+document.body.addEventListener('click', (event) => {
+  if (event.target.classList.contains('notWork-modal')) {
+    overlayNotwork.classList.add('overlay_active');
+    modalFigImage.classList.add('modal-fig__img_animation');
+    modalFigTitle.textContent = `Пока "${event.target.textContent}" не работает`
+  };
+
+  setTimeout(() => {
+    overlayNotwork.classList.remove('overlay_active');
+    modalFigImage.classList.remove('modal-fig__img_animation');
+  }, 3500)
+});

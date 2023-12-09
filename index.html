@@ -31,14 +31,14 @@
 <div class="header__container top__container">
 <div class="header__left">
 <button class="top__city btn-dotted">Россия</button>
-<a class="top__link top__link_left">Соискателям</a>
-<a href="#" class="top__link top__link_left">Работодателям</a>
+<a class="top__link top__link_left notWork-modal">Соискателям</a>
+<a href="#" class="top__link top__link_left notWork-modal">Работодателям</a>
 </div>
 
 <div class="header__right">
-<a class="top__link top__link_right" href="#">Готовое резюме</a>
-<a class="top__link top__link_right" href="#">Карьерная консультация</a>
-<button class="top__all-service"><span class="btn-dotted">Все сервисы</span></button>
+<a class="top__link top__link_right notWork-modal" href="#">Готовое резюме</a>
+<a class="top__link top__link_right notWork-modal" href="#">Карьерная консультация</a>
+<button class="top__all-service"><span class="btn-dotted notWork-modal">Все сервисы</span></button>
 </div>
 </div>
 </div>
@@ -48,13 +48,13 @@
 <div class="header__container middle__container">
 <div class="header__left">
 <img src="img/logo.svg" alt="Логотип HeadHunter" class="middle__logo">
-<button class="middle__help">Помощь</button>
+<button class="middle__help notWork-modal">Помощь</button>
 </div>
 
 <div class="header__right">
-<button class="middle__search-btn deactivate" tabindex="-1"><span>Поиск</span></button>
-<button class="middle__create-resume">Создать резюме</button>
-<button class="middle__sign-in">Войти</button>
+<button class="middle__search-btn deactivate notWork-modal" tabindex="-1"><span>Поиск</span></button>
+<button class="middle__create-resume notWork-modal">Создать резюме</button>
+<button class="middle__sign-in notWork-modal">Войти</button>
 </div>
 </div>
 </div>
@@ -72,8 +72,8 @@
 <nav class="bottom__navigation navigation">
 <ul class="navigation__list">
 <li class="navigation__item"><a href="#" class="navigation__link navigation__link_active">Вакансии</a></li>
-<li class="navigation__item"><a href="#" class="navigation__link">Резюме</a></li>
-<li class="navigation__item"><a href="#" class="navigation__link">Компании</a></li>
+<li class="navigation__item"><a href="#" class="navigation__link notWork-modal">Резюме</a></li>
+<li class="navigation__item"><a href="#" class="navigation__link notWork-modal">Компании</a></li>
 </ul>
 </nav>
 </div>
@@ -482,6 +482,14 @@ Switch to English
 </ul>
 </div>
 </div>
+</div>
+
+<!-- modal-fig шутливая модалка-->
+<div class="overlay overlay_notwork">
+  <div class="modal-fig">
+    <h2 class="modal-fig__title">Пока функция не работает</h2>
+    <img class="modal-fig__img" src="img/fig.png" alt="Приличный пингвин">
+  </div>
 </div>
 
 </body>
