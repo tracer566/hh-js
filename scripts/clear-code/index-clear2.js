@@ -11,6 +11,10 @@ const vacancyModalOverlay = document.querySelector('.overlay_vacancy');
 const resultList = document.querySelector('.result__list');
 const foundText = document.querySelector('.found');
 const formSearch = document.querySelector('.bottom__search');
+const orderBy = document.querySelector('#order_by');
+const searchPeriod = document.querySelector('#search_period');
+
+let data = [];
 
 // 2 пример возвращает число и слово  https://codepen.io/Quper/pen/zYGxbJm
 const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
@@ -140,6 +144,22 @@ const renderCards = (data, textSearch = '') => {
   resultList.append(...cards)
 };
 
+// сортировка данных по дате,возрастанию или убыванию,вызывается в нескольких местах
+const sortData = () => {
+  // console.log('sortData: ', data);
+  switch (orderBy.value) {
+    case 'down':
+      data.sort((a, b) => a.minCompensation - b.minCompensation);
+      break;
+    case 'up':
+      data.sort((a, b) => b.minCompensation - a.minCompensation);
+      break;
+    default:
+      data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+};
+
+
 // 2 выпадающих меню под заголовком кол-во вакансии
 const handlerOptionsMenu = () => {
   // клики на кнопки меню
@@ -163,6 +183,12 @@ const handlerOptionsMenu = () => {
       event.target.classList.add('option__item_active');
       optionBtnOrder.textContent = event.target.textContent;
       optionsListOrder.classList.remove('option__list_active');
+
+      // меняю value скрытому полю,беру из data-sort
+      orderBy.value = event.target.dataset.sort;
+      sortData();
+      renderCards(data);
+
     };
 
   });
@@ -207,11 +233,12 @@ const handlerCity = () => {
       // фильтр данных по городам и странам
       if (event.target.href.includes('city')) {
         // возращается promice нужны async,await
-        const data = await getData({ city: event.target.textContent });
+        data = await getData({ city: event.target.textContent });
         renderCards(data);
       } else if (event.target.href.includes('country')) {
         // возращается promice нужны async,await
-        const data = await getData({ country: event.target.textContent });
+        data = await getData({ country: event.target.textContent });
+        sortData();
         renderCards(data);
       };
     }
@@ -297,7 +324,8 @@ const handlerSearch = () => {
     if (textSearch.length > 2) {
       formSearch.search.style.borderColor = "";
       // получаю данные поиска из базы
-      const data = await getData({ searсh: textSearch });
+      data = await getData({ searсh: textSearch });
+      sortData();
       renderCards(data, textSearch);
       // очищаю форму
       formSearch.reset();
@@ -312,7 +340,8 @@ const handlerSearch = () => {
 
 // ассинхроная функция запуска и принятие promice из getdata
 const init = async () => {
-  const data = await getData();
+  data = await getData();
+  sortData();
   renderCards(data);
 
   // обработчики

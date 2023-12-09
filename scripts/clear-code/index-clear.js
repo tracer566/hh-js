@@ -11,6 +11,11 @@ const vacancyModalOverlay = document.querySelector('.overlay_vacancy');
 const resultList = document.querySelector('.result__list');
 const formSearch = document.querySelector('.bottom__search');
 const foundText = document.querySelector('.found');
+// сортировка
+const orderBy = document.querySelector('#order_by');
+const searchPeriod = document.querySelector('#search_period');
+
+let data = [];
 
 const declOfNum = (n, titles) => n + ' ' + titles[n % 10 === 1 && n % 100 !== 11 ?
   0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
@@ -109,6 +114,27 @@ const renderCards = (data, textSearch = '') => {
   resultList.append(...cards)
 };
 
+const sortData = () => {
+  // let result = null;
+  switch (orderBy.value) {
+    case 'down':
+      // data.sort((a, b) => a.minCompensation - b.minCompensation);
+      data.sort((a, b) => a.minCompensation > b.minCompensation ? 1 : -1);
+      break;
+    case 'up':
+      data.sort((a, b) => b.minCompensation > a.minCompensation ? 1 : -1);
+      break;
+    default:
+      data.sort((a, b) => new Date(b.date).getTime() > new Date(a.date).getTime() ? 1 : -1)
+    // getTime покажет число типо 5670112355,если в new Date() строка 02/12/2023
+    // чем позднее,тем больше число в getTime
+  }
+
+  // return result;
+};
+
+// alert(new Date('5/12/2023').getTime())
+
 // 2 выпадающих меню под заголовком кол-во вакансии
 const handlerOptionsMenu = () => {
   // клики на кнопки меню
@@ -132,6 +158,12 @@ const handlerOptionsMenu = () => {
       event.target.classList.add('option__item_active');
       optionBtnOrder.textContent = event.target.textContent;
       optionsListOrder.classList.remove('option__list_active');
+
+      // меняю value скрытому полю,беру из data-sort
+      orderBy.value = event.target.dataset.sort;
+      sortData();
+      // console.log('sortData data: ', data);
+      renderCards(data);
     };
 
   });
@@ -182,7 +214,8 @@ const handlerCity = () => {
       };
       // console.log('option: ', option);
       // передаю объект как есть
-      const data = await getData(option);
+      data = await getData(option);
+      sortData();
       renderCards(data);
       // 2 способ event.target.getAttribute('href').substring(1)-убрать # у ссылки
       // 3 способ
@@ -280,7 +313,8 @@ const handlerSearch = () => {
     if (textSearch.length > 2) {
       formSearch.search.style.borderColor = "";
       // получаю данные поиска из базы
-      const data = await getData({ searсh: textSearch });
+      data = await getData({ searсh: textSearch });
+      sortData();
       renderCards(data, textSearch);
       // очищаю форму
       formSearch.reset();
@@ -295,8 +329,9 @@ const handlerSearch = () => {
 
 // запуск 1-ая функция
 const init = async () => {
-  const data = await getData();
+  data = await getData();
   renderCards(data);
+  sortData();
 
   // обработчики
   handlerOptionsMenu();
