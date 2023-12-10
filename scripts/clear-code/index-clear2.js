@@ -122,7 +122,7 @@ const createCard = (vacancy) => {
 </p>
 <div class="vacancy__wrapper-btn">
 <a class="vacancy__response vacancy__open-modal" href="#" data-vacancy="${id}">Откликнуться</a>
-<button class="vacancy__contacts">Показать контакты</button>
+<button class="vacancy__contacts notWork-modal">Показать контакты</button>
 </div>
 </article>
   `);
@@ -159,6 +159,30 @@ const sortData = () => {
   }
 };
 
+// функция фильтрует по дате
+const filterData = () => {
+  const date = new Date();
+  // console.log('date000: ', new Date('12/08/2023').getTime());
+  date.setDate(date.getDate() - searchPeriod.value);
+  // console.log('date111: ', date.getTime());
+  return data.filter(item => {
+    // нужно в item.date поменять местами число и месяц для new Date конструктора
+    let itemDate = item.date;
+    // console.log('itemDate: ', itemDate);
+    // делаю массив
+    let parts = itemDate.split('/');
+    // меняю местами
+    let temp = parts[0];
+    parts[0] = parts[1];
+    parts[1] = temp;
+
+    // делаю снова строку
+    let result = parts.join('/')
+
+    return new Date(result).getTime() > date
+  });
+
+};
 
 // 2 выпадающих меню под заголовком кол-во вакансии
 const handlerOptionsMenu = () => {
@@ -198,6 +222,11 @@ const handlerOptionsMenu = () => {
     const target = event.target;
 
     if (target.classList.contains('option__item')) {
+      searchPeriod.value = target.dataset.date;
+      // фильтрация по дате
+      const tempData = filterData();
+      console.log('tempData: ', tempData);
+      renderCards(tempData);
       for (const elem of optionsListPeriod.querySelectorAll('.option__item')) {
         if (elem === target) {
           elem.classList.add('option__item_active');
@@ -341,6 +370,7 @@ const handlerSearch = () => {
 // ассинхроная функция запуска и принятие promice из getdata
 const init = async () => {
   data = await getData();
+  data = filterData();
   sortData();
   renderCards(data);
 
@@ -370,5 +400,5 @@ document.body.addEventListener('click', (event) => {
   setTimeout(() => {
     overlayNotwork.classList.remove('overlay_active');
     modalFigImage.classList.remove('modal-fig__img_animation');
-  }, 3500)
+  }, 4000)
 });

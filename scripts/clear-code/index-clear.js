@@ -114,6 +114,7 @@ const renderCards = (data, textSearch = '') => {
   resultList.append(...cards)
 };
 
+// функция сортирует по убыванию и возрастанию зарплат
 const sortData = () => {
   // let result = null;
   switch (orderBy.value) {
@@ -133,7 +134,33 @@ const sortData = () => {
   // return result;
 };
 
-// alert(new Date('5/12/2023').getTime())
+// функция фильтрует по дате
+const filterData = () => {
+  const date = new Date();
+  console.log('date000: ', new Date('12/08/2023').getTime());
+  date.setDate(date.getDate() - searchPeriod.value);
+  console.log('date111: ', date.getTime());
+  return data.filter(item => {
+    // нужно в item.date поменять местами число и месяц для new Date конструктора
+    let itemDate = item.date;
+    console.log('itemDate: ', itemDate);
+    // делаю массив
+    let parts = itemDate.split('/');
+    // меняю местами
+    let temp = parts[0];
+    parts[0] = parts[1];
+    parts[1] = temp;
+
+    // делаю снова строку
+    let result = parts.join('/')
+
+    return new Date(result).getTime() > date
+  }
+  )
+
+};
+
+// filterData();
 
 // 2 выпадающих меню под заголовком кол-во вакансии
 const handlerOptionsMenu = () => {
@@ -173,6 +200,11 @@ const handlerOptionsMenu = () => {
     const target = event.target;
 
     if (target.classList.contains('option__item')) {
+      searchPeriod.value = target.dataset.date;
+      // фильтрация по дате
+      const tempData = filterData();
+      console.log('tempData: ', tempData);
+      renderCards(tempData);
       for (const elem of optionsListPeriod.querySelectorAll('.option__item')) {
         if (elem === target) {
           elem.classList.add('option__item_active');
@@ -182,6 +214,7 @@ const handlerOptionsMenu = () => {
       }
       optionBtnPeriod.textContent = event.target.textContent;
       optionsListPeriod.classList.remove('option__list_active');
+
     }
   });
 };
@@ -330,6 +363,8 @@ const handlerSearch = () => {
 // запуск 1-ая функция
 const init = async () => {
   data = await getData();
+  // console.log('data init: ', data.length);
+  data = filterData();
   renderCards(data);
   sortData();
 

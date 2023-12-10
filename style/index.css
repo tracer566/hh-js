@@ -1031,16 +1031,18 @@ input[type=search]::-webkit-search-cancel-button {
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
 }
 .modal-fig__title {
   margin-bottom: 20px;
   font-size: 20px;
   text-transform: uppercase;
-  color: rgb(255, 18, 14);
+  color: rgb(255, 255, 255);
   font-weight: bold;
-  text-shadow: 0px 0px 5px #fff;
+  text-shadow: 1px 1px 5px #000;
+  background-color: #000;
+  border-radius: 10px;
 }
 .modal-fig__img_animation {
   animation: rotate 2s linear;
